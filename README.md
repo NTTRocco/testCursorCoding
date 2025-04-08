@@ -1,11 +1,58 @@
 # Kafka Development Environment
 
-This repository contains a Docker Compose setup for a local Kafka development environment.
+This repository contains a Docker Compose setup for a local Kafka development environment and a kafka event generator.
 
 ## Prerequisites
 
-- Docker
-- Docker Compose
+- Homebrew (for macOS)
+- Git
+
+## Docker Setup with Colima (macOS)
+
+Instead of Docker Desktop, this setup uses Colima as a lightweight Docker runtime for macOS.
+
+1. Install Colima and Docker CLI tools:
+   ```bash
+   brew install colima docker docker-compose
+   ```
+
+2. Start Colima:
+   ```bash
+   # Basic setup (2 CPUs, 4GB memory)
+   colima start
+
+   # Or for more resources:
+   colima start --cpu 4 --memory 8 --disk 100
+   ```
+
+3. Verify Docker is working:
+   ```bash
+   docker ps
+   ```
+
+### Colima Management Commands
+
+- Check Colima status:
+  ```bash
+  colima status
+  ```
+
+- Stop Colima:
+  ```bash
+  colima stop
+  ```
+
+- Delete Colima instance:
+  ```bash
+  colima delete
+  ```
+
+- List running instances:
+  ```bash
+  colima list
+  ```
+
+**Note**: Always ensure Colima is running before using Docker commands. If you see errors about Docker daemon not being available, start Colima first.
 
 ## Getting Started
 
