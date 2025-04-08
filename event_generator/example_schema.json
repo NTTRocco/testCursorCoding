@@ -1,0 +1,62 @@
+{
+  "type": "object",
+  "properties": {
+    "event_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "user": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "email": {
+          "type": "string",
+          "format": "email"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": ["id", "email", "name"]
+    },
+    "order": {
+      "type": "object",
+      "properties": {
+        "order_id": {
+          "type": "string"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "product_id": {
+                "type": "string"
+              },
+              "quantity": {
+                "type": "integer"
+              },
+              "price": {
+                "type": "number"
+              }
+            },
+            "required": ["product_id", "quantity", "price"]
+          },
+          "minItems": 1,
+          "maxItems": 5
+        },
+        "total_amount": {
+          "type": "number"
+        }
+      },
+      "required": ["order_id", "items", "total_amount"]
+    }
+  },
+  "required": ["event_id", "timestamp", "user", "order"]
+} 

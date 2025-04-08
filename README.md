@@ -85,3 +85,78 @@ If you encounter any issues:
 - This is a development setup and should not be used in production
 - The environment uses a single Kafka broker with replication factor 1
 - Data is persisted between restarts unless you use `docker-compose down -v`
+
+## Event Generator
+
+This repository includes a Python-based event generator that can create and publish random events to Kafka based on a JSON schema.
+
+### Prerequisites
+
+- Python 3.7+
+- pip (Python package manager)
+
+### Installation
+
+1. Install the required Python packages:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+### Usage
+
+The event generator can be used from the command line with the following syntax:
+
+```bash
+python event_generator/event_generator.py [TOPIC] [SCHEMA_FILE] [OPTIONS]
+```
+
+Arguments:
+- `TOPIC`: The Kafka topic to publish events to
+- `SCHEMA_FILE`: Path to the JSON schema file that defines the event structure
+
+Options:
+- `--num-events`: Number of events to generate (default: 10)
+- `--bootstrap-servers`: Kafka bootstrap servers (default: "localhost:9092")
+
+Example usage:
+
+```bash
+# Generate 100 events using the example schema
+python event_generator/event_generator.py my-topic event_generator/example_schema.json --num-events 100
+```
+
+### Example Schema
+
+An example schema file is provided in `event_generator/example_schema.json`. This schema generates events with the following structure:
+
+```json
+{
+  "event_id": "uuid",
+  "timestamp": "date-time",
+  "user": {
+    "id": "integer",
+    "email": "email",
+    "name": "string"
+  },
+  "order": {
+    "order_id": "string",
+    "items": [
+      {
+        "product_id": "string",
+        "quantity": "integer",
+        "price": "number"
+      }
+    ],
+    "total_amount": "number"
+  }
+}
+```
+
+### Creating Custom Schemas
+
+You can create your own JSON schemas following the JSON Schema specification. The event generator supports:
+- Basic types: string, integer, number, boolean, array, object
+- String formats: date-time, uuid, email
+- Array constraints: minItems, maxItems
+- Required fields
+- Nested objects and arrays
