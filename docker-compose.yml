@@ -65,5 +65,20 @@ services:
       timeout: 5s
       retries: 5
 
+  event-generator-api:
+    build:
+      context: .
+      dockerfile: event_generator/Dockerfile
+    container_name: event-generator-api
+    depends_on:
+      kafka:
+        condition: service_healthy
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./event_generator:/app/event_generator
+    environment:
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+
 volumes:
   postgres_data: 

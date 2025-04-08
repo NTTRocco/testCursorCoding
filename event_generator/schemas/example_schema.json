@@ -1,0 +1,20 @@
+{
+  "event_id": "uuid",
+  "timestamp": "date-time",
+  "user": {
+    "id": "integer",
+    "email": "email",
+    "name": "string"
+  },
+  "order": {
+    "order_id": "string",
+    "items": [
+      {
+        "product_id": "string",
+        "quantity": "integer",
+        "price": "number"
+      }
+    ],
+    "total_amount": "number"
+  }
+} 

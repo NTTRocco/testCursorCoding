@@ -57,10 +57,14 @@ def kafka_consumer():
 def index():
     return render_template('index.html', messages=latest_messages)
 
+@app.route('/generator')
+def generator():
+    return render_template('event-generator.html')
+
 if __name__ == '__main__':
     # Start Kafka consumer in a separate thread
     consumer_thread = threading.Thread(target=kafka_consumer, daemon=True)
     consumer_thread.start()
     
     # Start the Flask application
-    socketio.run(app, debug=True, host='0.0.0.0', port=5000) 
+    socketio.run(app, debug=True, host='0.0.0.0', port=5002) 

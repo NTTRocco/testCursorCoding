@@ -23,7 +23,7 @@
     <div class="container mx-auto px-4 py-8">
         <header class="mb-8">
             <h1 class="text-3xl font-bold text-gray-800">Kafka Message Viewer</h1>
-            <p class="text-gray-600">Real-time message monitoring</p>
+            <p class="text-gray-600">Real-time message monitoring from all topics</p>
         </header>
 
         <div class="bg-white rounded-lg shadow-lg p-6">
@@ -38,11 +38,11 @@
                 {% for message in messages %}
                 <div class="message bg-gray-50 rounded-lg p-4 mb-4">
                     <div class="flex justify-between items-start mb-2">
-                        <div class="flex items-center">
-                            <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                                {{ message.topic }}
+                        <div class="flex items-center space-x-2">
+                            <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                                Topic: {{ message.topic }}
                             </span>
-                            <span class="ml-2 text-sm text-gray-500">
+                            <span class="text-sm text-gray-500">
                                 Partition {{ message.partition }} | Offset {{ message.offset }}
                             </span>
                         </div>
@@ -69,11 +69,11 @@
             messageDiv.className = 'message bg-gray-50 rounded-lg p-4 mb-4';
             messageDiv.innerHTML = `
                 <div class="flex justify-between items-start mb-2">
-                    <div class="flex items-center">
-                        <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                            ${data.topic}
+                    <div class="flex items-center space-x-2">
+                        <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                            Topic: ${data.topic}
                         </span>
-                        <span class="ml-2 text-sm text-gray-500">
+                        <span class="text-sm text-gray-500">
                             Partition ${data.partition} | Offset ${data.offset}
                         </span>
                     </div>

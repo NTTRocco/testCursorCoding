@@ -123,7 +123,8 @@ The following services will be available:
   - 9092 (for local machine access)
   - 29092 (for inter-container access)
 - **Kafka UI**: Access the web interface at http://localhost:8080
-- **Kafka Message Viewer**: Access the web interface at http://localhost:5000
+- **Kafka Message Viewer**: Access the web interface at http://localhost:5002
+- **Event Generator API**: Access the API at http://localhost:5003
 - **PostgreSQL**: Running on port 5432
 
 ### Using Kafka
@@ -132,6 +133,7 @@ The following services will be available:
 
 - Bootstrap Servers: `localhost:9092` (from your local machine)
 - Bootstrap Servers: `kafka:29092` (from other containers)
+- Default Topic: `my-topic` (used by the message viewer)
 
 #### Kafka UI
 
@@ -142,6 +144,59 @@ The Kafka UI provides a web interface to:
 - Browse messages
 
 Access it at: http://localhost:8080
+
+### Kafka Message Viewer
+
+The Kafka Message Viewer is a real-time web application that displays messages from all Kafka topics.
+
+#### Features
+
+- Real-time message consumption and display from all Kafka topics
+- Topic label displayed for each message
+- Modern, responsive UI using Tailwind CSS
+- WebSocket-based updates for instant message display
+- JSON message pretty-printing
+- Message metadata display (topic, partition, offset, timestamp)
+- Message count tracking
+- Scrollable message history
+- Maintains last 100 messages in memory
+
+#### Access
+
+The message viewer is available at: http://localhost:5002
+
+#### Message Display
+
+Each message is displayed with:
+- Source topic name in a blue badge
+- Partition and offset information
+- Timestamp
+- Formatted JSON content
+- Hover effect for better readability
+
+### Event Generator
+
+The Event Generator provides a web interface and API for generating and publishing events to Kafka.
+
+#### Features
+
+- Web interface for event generation
+- REST API for programmatic event generation
+- Support for multiple schemas
+- Configurable number of events
+- Topic selection
+- Event preview before publishing
+
+#### Access
+
+- Web Interface: http://localhost:5002/generator
+- API Endpoint: http://localhost:5003
+
+#### API Endpoints
+
+- `GET /api/schemas` - List available schemas
+- `GET /api/topics` - List available topics
+- `POST /api/generate` - Generate and publish events
 
 ### PostgreSQL Database
 

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kafka Event Generator</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <header class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-800">Kafka Event Generator</h1>
+            <p class="text-gray-600">Generate and publish events to Kafka</p>
+        </header>
+
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <form id="eventGeneratorForm" class="space-y-6">
+                <div>
+                    <label for="schema" class="block text-sm font-medium text-gray-700">Schema</label>
+                    <select id="schema" name="schema" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                        <option value="">Select a schema</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="topic" class="block text-sm font-medium text-gray-700">Topic</label>
+                    <select id="topic" name="topic" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                        <option value="">Select a topic</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="numEvents" class="block text-sm font-medium text-gray-700">Number of Events</label>
+                    <input type="number" id="numEvents" name="numEvents" min="1" max="1000" value="10" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                </div>
+
+                <div>
+                    <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Generate Events
+                    </button>
+                </div>
+            </form>
+
+            <div id="preview" class="mt-8 hidden">
+                <h2 class="text-lg font-medium text-gray-900 mb-4">Generated Events</h2>
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <pre id="eventPreview" class="text-sm overflow-x-auto"></pre>
+                </div>
+            </div>
+
+            <div id="error" class="mt-4 hidden">
+                <div class="bg-red-50 border-l-4 border-red-400 p-4">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                        <div class="ml-3">
+                            <p id="errorMessage" class="text-sm text-red-700"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:5003/api';
+        
+        // Load schemas and topics on page load
+        async function loadInitialData() {
+            try {
+                const [schemasResponse, topicsResponse] = await Promise.all([
+                    axios.get(`${API_BASE_URL}/schemas`),
+                    axios.get(`${API_BASE_URL}/topics`)
+                ]);
+
+                const schemaSelect = document.getElementById('schema');
+                const topicSelect = document.getElementById('topic');
+
+                schemasResponse.data.schemas.forEach(schema => {
+                    const option = document.createElement('option');
+                    option.value = schema;
+                    option.textContent = schema;
+                    schemaSelect.appendChild(option);
+                });
+
+                topicsResponse.data.topics.forEach(topic => {
+                    const option = document.createElement('option');
+                    option.value = topic;
+                    option.textContent = topic;
+                    topicSelect.appendChild(option);
+                });
+            } catch (error) {
+                showError('Failed to load schemas and topics');
+            }
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            const errorMessage = document.getElementById('errorMessage');
+            errorMessage.textContent = message;
+            errorDiv.classList.remove('hidden');
+        }
+
+        function hideError() {
+            document.getElementById('error').classList.add('hidden');
+        }
+
+        function showPreview(events) {
+            const preview = document.getElementById('preview');
+            const eventPreview = document.getElementById('eventPreview');
+            eventPreview.textContent = JSON.stringify(events, null, 2);
+            preview.classList.remove('hidden');
+        }
+
+        document.getElementById('eventGeneratorForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideError();
+
+            const formData = {
+                schema: document.getElementById('schema').value,
+                topic: document.getElementById('topic').value,
+                num_events: parseInt(document.getElementById('numEvents').value)
+            };
+
+            try {
+                const response = await axios.post(`${API_BASE_URL}/generate`, formData);
+                showPreview(response.data.events);
+            } catch (error) {
+                showError(error.response?.data?.error || 'Failed to generate events');
+            }
+        });
+
+        // Load initial data when the page loads
+        loadInitialData();
+    </script>
+</body>
+</html> 
