@@ -10,6 +10,7 @@ graph TB
         Z[Zookeeper]
         K[Kafka Broker]
         KUI[Kafka UI]
+        PG[PostgreSQL]
     end
 
     subgraph "Event Generator"
@@ -24,6 +25,7 @@ graph TB
         K -->|Consumes| WA
         WA -->|Real-time Updates| WC
         WC -->|WebSocket| B[Browser]
+        WA -->|Store| PG
     end
 
     subgraph "Development Tools"
@@ -33,6 +35,7 @@ graph TB
     style Z fill:#f9f,stroke:#333,stroke-width:2px
     style K fill:#bbf,stroke:#333,stroke-width:2px
     style KUI fill:#bfb,stroke:#333,stroke-width:2px
+    style PG fill:#f9f,stroke:#333,stroke-width:2px
     style EG fill:#fbb,stroke:#333,stroke-width:2px
     style WA fill:#fbb,stroke:#333,stroke-width:2px
     style B fill:#fbb,stroke:#333,stroke-width:2px
@@ -120,6 +123,7 @@ The following services will be available:
   - 29092 (for inter-container access)
 - **Kafka UI**: Access the web interface at http://localhost:8080
 - **Kafka Message Viewer**: Access the web interface at http://localhost:5000
+- **PostgreSQL**: Running on port 5432
 
 ## Using Kafka
 
@@ -137,6 +141,37 @@ The Kafka UI provides a web interface to:
 - Browse messages
 
 Access it at: http://localhost:8080
+
+## PostgreSQL Database
+
+The environment includes a PostgreSQL database for persistent storage of Kafka events.
+
+### Connection Details
+
+- **Host**: `localhost` (or `postgres` from other containers)
+- **Port**: `5432`
+- **Database**: `kafka_events`
+- **Username**: `postgres`
+- **Password**: `postgres`
+
+### Data Persistence
+
+The database data is persisted using a Docker volume named `postgres_data`. This ensures that your data remains intact even if you stop or restart the containers.
+
+### Health Checks
+
+The PostgreSQL service includes health checks to ensure it's running properly. You can monitor the health status using:
+
+```bash
+docker-compose ps postgres
+```
+
+### Notes
+
+- The database is initialized with a default database named `kafka_events`
+- Data is persisted between container restarts
+- The database uses PostgreSQL 16 Alpine for a lightweight footprint
+- The service includes automatic health checks
 
 ## Kafka Message Viewer Web Application
 
