@@ -1,8 +1,8 @@
-# Kafka Development Environment
+# Data Ingestion Factory
 
 This repository contains a Docker Compose setup for a local Kafka development environment, a kafka event generator, and a real-time message viewer web application.
 
-## Architecture Overview
+## 1. Architecture Overview
 
 ```mermaid
 graph TB
@@ -41,14 +41,15 @@ graph TB
     style B fill:#fbb,stroke:#333,stroke-width:2px
 ```
 
-## Prerequisites
+## Setup and run the Development Environment 
+###Prerequisites
 
 - Homebrew (for macOS)
 - Git
 - Python 3.7+
 - pip (Python package manager)
 
-## Docker Setup with Colima (macOS)
+### Docker Setup with Colima (macOS)
 
 Instead of Docker Desktop, this setup uses Colima as a lightweight Docker runtime for macOS.
 
@@ -58,12 +59,12 @@ Instead of Docker Desktop, this setup uses Colima as a lightweight Docker runtim
    ```
 
 2. Start Colima:
-   ```bash
-   # Basic setup (2 CPUs, 4GB memory)
-   colima start
+   
+   Basic setup (2 CPUs, 4GB memory)
+   ```bash colima start```
 
-   # Or for more resources:
-   colima start --cpu 4 --memory 8 --disk 100
+   Or for more resources:
+   ```bash colima start --cpu 4 --memory 8 --disk 100
    ```
 
 3. Verify Docker is working:
@@ -71,7 +72,7 @@ Instead of Docker Desktop, this setup uses Colima as a lightweight Docker runtim
    docker ps
    ```
 
-### Colima Management Commands
+#### Colima Management Commands
 
 - Check Colima status:
   ```bash
@@ -95,7 +96,7 @@ Instead of Docker Desktop, this setup uses Colima as a lightweight Docker runtim
 
 **Note**: Always ensure Colima is running before using Docker commands. If you see errors about Docker daemon not being available, start Colima first.
 
-## Getting Started
+### Getting Started
 
 1. Clone this repository:
    ```bash
@@ -113,7 +114,7 @@ Instead of Docker Desktop, this setup uses Colima as a lightweight Docker runtim
    docker-compose ps
    ```
 
-## Services
+### Services
 
 The following services will be available:
 
@@ -125,14 +126,14 @@ The following services will be available:
 - **Kafka Message Viewer**: Access the web interface at http://localhost:5000
 - **PostgreSQL**: Running on port 5432
 
-## Using Kafka
+### Using Kafka
 
-### Connection Details
+#### Connection Details
 
 - Bootstrap Servers: `localhost:9092` (from your local machine)
 - Bootstrap Servers: `kafka:29092` (from other containers)
 
-### Kafka UI
+#### Kafka UI
 
 The Kafka UI provides a web interface to:
 - Monitor topics, partitions, and messages
@@ -142,11 +143,11 @@ The Kafka UI provides a web interface to:
 
 Access it at: http://localhost:8080
 
-## PostgreSQL Database
+### PostgreSQL Database
 
 The environment includes a PostgreSQL database for persistent storage of Kafka events.
 
-### Connection Details
+#### Connection Details
 
 - **Host**: `localhost` (or `postgres` from other containers)
 - **Port**: `5432`
@@ -154,11 +155,11 @@ The environment includes a PostgreSQL database for persistent storage of Kafka e
 - **Username**: `postgres`
 - **Password**: `postgres`
 
-### Data Persistence
+#### Data Persistence
 
 The database data is persisted using a Docker volume named `postgres_data`. This ensures that your data remains intact even if you stop or restart the containers.
 
-### Health Checks
+#### Health Checks
 
 The PostgreSQL service includes health checks to ensure it's running properly. You can monitor the health status using:
 
@@ -166,14 +167,14 @@ The PostgreSQL service includes health checks to ensure it's running properly. Y
 docker-compose ps postgres
 ```
 
-### Notes
+#### Notes
 
 - The database is initialized with a default database named `kafka_events`
 - Data is persisted between container restarts
 - The database uses PostgreSQL 16 Alpine for a lightweight footprint
 - The service includes automatic health checks
 
-## Kafka Message Viewer Web Application
+## 2. Kafka Message Viewer Web Application
 
 This repository includes a real-time web application for viewing Kafka messages as they arrive.
 
@@ -280,7 +281,7 @@ If you encounter any issues:
 - The environment uses a single Kafka broker with replication factor 1
 - Data is persisted between restarts unless you use `docker-compose down -v`
 
-## Event Generator
+## 3.Event Generator
 
 This repository includes a Python-based event generator that can create and publish random events to Kafka based on a JSON schema.
 
