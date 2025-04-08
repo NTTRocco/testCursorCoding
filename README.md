@@ -1,11 +1,13 @@
 # Kafka Development Environment
 
-This repository contains a Docker Compose setup for a local Kafka development environment and a kafka event generator.
+This repository contains a Docker Compose setup for a local Kafka development environment, a kafka event generator, and a real-time message viewer web application.
 
 ## Prerequisites
 
 - Homebrew (for macOS)
 - Git
+- Python 3.7+
+- pip (Python package manager)
 
 ## Docker Setup with Colima (macOS)
 
@@ -81,6 +83,7 @@ The following services will be available:
   - 9092 (for local machine access)
   - 29092 (for inter-container access)
 - **Kafka UI**: Access the web interface at http://localhost:8080
+- **Kafka Message Viewer**: Access the web interface at http://localhost:5000
 
 ## Using Kafka
 
@@ -98,6 +101,79 @@ The Kafka UI provides a web interface to:
 - Browse messages
 
 Access it at: http://localhost:8080
+
+## Kafka Message Viewer Web Application
+
+This repository includes a real-time web application for viewing Kafka messages as they arrive.
+
+### Features
+
+- Real-time message consumption and display
+- Modern, responsive UI using Tailwind CSS
+- WebSocket-based updates for instant message display
+- JSON message pretty-printing
+- Message metadata display (topic, partition, offset, timestamp)
+- Message count tracking
+- Scrollable message history
+- Maintains last 100 messages in memory
+
+### Installation
+
+1. Install the required Python packages if you haven't already:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+### Usage
+
+1. Start the web application:
+   ```bash
+   python webapp/app.py
+   ```
+
+2. Open your browser and navigate to:
+   ```
+   http://localhost:5000
+   ```
+
+The web application will automatically:
+- Connect to your Kafka cluster at `localhost:9092`
+- Subscribe to all available topics
+- Display new messages in real-time at the top of the page
+- Format and pretty-print JSON messages for readability
+
+### Architecture
+
+The application consists of two main components:
+
+1. **Backend (`webapp/app.py`)**:
+   - Flask web server
+   - Kafka consumer running in a background thread
+   - WebSocket server for real-time updates
+   - Message management and storage
+
+2. **Frontend (`webapp/templates/index.html`)**:
+   - Responsive UI built with Tailwind CSS
+   - WebSocket client for real-time updates
+   - Dynamic message rendering
+   - JSON formatting and display
+
+### Notes
+
+- The web application requires an active Kafka cluster (see "Getting Started" section)
+- Messages are stored in memory and will be cleared when the application restarts
+- The UI is optimized for both desktop and mobile viewing
+- The application keeps only the latest 100 messages to manage memory usage
+
+### Troubleshooting
+
+If you encounter any issues with the web application:
+
+1. Ensure the Kafka cluster is running and accessible
+2. Check that port 5000 is available on your machine
+3. Verify all dependencies are installed correctly
+4. Check the terminal output for any error messages
+5. Ensure the Kafka broker is accessible at `localhost:9092`
 
 ## Stopping the Environment
 
@@ -120,7 +196,7 @@ If you encounter any issues:
    docker-compose logs -f [service_name]
    ```
 
-2. Ensure all ports (2181, 9092, 29092, 8080) are available on your machine
+2. Ensure all ports (2181, 9092, 29092, 8080, 5000) are available on your machine
 
 3. Restart the services:
    ```bash
