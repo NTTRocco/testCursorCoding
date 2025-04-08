@@ -130,7 +130,8 @@ The following services will be available:
   - 29092 (for inter-container access)
 - **Kafka UI**: Access the web interface at http://localhost:8080
 - **Kafka Message Viewer**: Access the web interface at http://localhost:5002
-- **Event Generator API**: Access the API at http://localhost:5003
+- **Event Generator API**: Access the API at http://localhost:5002/generator
+- **API Endpoint:** http://localhost:5003
 - **PostgreSQL**: Running on port 5432
 
 ### Using Kafka
