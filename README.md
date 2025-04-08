@@ -20,12 +20,17 @@ graph TB
     end
 
     subgraph "Web Application"
-        WA[Flask Web Server]
+        WA[Flask Web Server<br/>Port 5002]
         WC[WebSocket Server]
-        K -->|Consumes| WA
+        K -->|Consumes from all topics| WA
         WA -->|Real-time Updates| WC
         WC -->|WebSocket| B[Browser]
         WA -->|Store| PG
+    end
+
+    subgraph "Event Generator API"
+        API[Flask API Server<br/>Port 5003]
+        API -->|Generate Events| K
     end
 
     subgraph "Development Tools"
@@ -39,6 +44,7 @@ graph TB
     style EG fill:#fbb,stroke:#333,stroke-width:2px
     style WA fill:#fbb,stroke:#333,stroke-width:2px
     style B fill:#fbb,stroke:#333,stroke-width:2px
+    style API fill:#fbb,stroke:#333,stroke-width:2px
 ```
 
 ## Setup and run the Development Environment 
