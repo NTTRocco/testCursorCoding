@@ -2,6 +2,42 @@
 
 This repository contains a Docker Compose setup for a local Kafka development environment, a kafka event generator, and a real-time message viewer web application.
 
+## Architecture Overview
+
+```mermaid
+graph TB
+    subgraph "Docker Environment"
+        Z[Zookeeper]
+        K[Kafka Broker]
+        KUI[Kafka UI]
+    end
+
+    subgraph "Event Generator"
+        EG[Python Event Generator]
+        ES[Event Schema]
+        EG -->|Produces| K
+    end
+
+    subgraph "Web Application"
+        WA[Flask Web Server]
+        WC[WebSocket Server]
+        K -->|Consumes| WA
+        WA -->|Real-time Updates| WC
+        WC -->|WebSocket| B[Browser]
+    end
+
+    subgraph "Development Tools"
+        KUI -->|Monitor| K
+    end
+
+    style Z fill:#f9f,stroke:#333,stroke-width:2px
+    style K fill:#bbf,stroke:#333,stroke-width:2px
+    style KUI fill:#bfb,stroke:#333,stroke-width:2px
+    style EG fill:#fbb,stroke:#333,stroke-width:2px
+    style WA fill:#fbb,stroke:#333,stroke-width:2px
+    style B fill:#fbb,stroke:#333,stroke-width:2px
+```
+
 ## Prerequisites
 
 - Homebrew (for macOS)
