@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kafka Message Viewer</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <style>
+        .message-container {
+            height: calc(100vh - 200px);
+            overflow-y: auto;
+        }
+        .message {
+            transition: all 0.3s ease;
+        }
+        .message:hover {
+            transform: translateX(5px);
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <header class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-800">Kafka Message Viewer</h1>
+            <p class="text-gray-600">Real-time message monitoring</p>
+        </header>
+
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-semibold text-gray-700">Messages</h2>
+                <div class="text-sm text-gray-500">
+                    <span id="message-count">0</span> messages
+                </div>
+            </div>
+
+            <div class="message-container" id="messages">
+                {% for message in messages %}
+                <div class="message bg-gray-50 rounded-lg p-4 mb-4">
+                    <div class="flex justify-between items-start mb-2">
+                        <div class="flex items-center">
+                            <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                                {{ message.topic }}
+                            </span>
+                            <span class="ml-2 text-sm text-gray-500">
+                                Partition {{ message.partition }} | Offset {{ message.offset }}
+                            </span>
+                        </div>
+                        <span class="text-sm text-gray-500">{{ message.timestamp }}</span>
+                    </div>
+                    <pre class="bg-gray-100 p-3 rounded text-sm overflow-x-auto">{{ message.value | tojson(indent=2) }}</pre>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const socket = io();
+        const messagesContainer = document.getElementById('messages');
+        const messageCount = document.getElementById('message-count');
+        let count = {{ messages|length }};
+
+        socket.on('new_message', function(data) {
+            count++;
+            messageCount.textContent = count;
+
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message bg-gray-50 rounded-lg p-4 mb-4';
+            messageDiv.innerHTML = `
+                <div class="flex justify-between items-start mb-2">
+                    <div class="flex items-center">
+                        <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                            ${data.topic}
+                        </span>
+                        <span class="ml-2 text-sm text-gray-500">
+                            Partition ${data.partition} | Offset ${data.offset}
+                        </span>
+                    </div>
+                    <span class="text-sm text-gray-500">${data.timestamp}</span>
+                </div>
+                <pre class="bg-gray-100 p-3 rounded text-sm overflow-x-auto">${JSON.stringify(data.value, null, 2)}</pre>
+            `;
+
+            messagesContainer.insertBefore(messageDiv, messagesContainer.firstChild);
+
+            // Keep only the latest 100 messages in the DOM
+            if (messagesContainer.children.length > 100) {
+                messagesContainer.removeChild(messagesContainer.lastChild);
+            }
+        });
+    </script>
+</body>
+</html> 
